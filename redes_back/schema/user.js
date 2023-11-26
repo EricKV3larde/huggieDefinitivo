@@ -9,7 +9,7 @@ const UserSchema = new Mongoose.Schema({
     id: {type: Object},
     nombre: { type: String, required: true},
     apellido: { type: String, required: true},
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, trim: true, unique: true },
     password: { type: String, required: true},
 });
 

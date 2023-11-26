@@ -9,8 +9,10 @@ const singoutRouter = require("./routes/singout.js");
 const foroRouter = require("./routes/foro.js");
 const rTokenRouter = require("./routes/rToken.js");
 const { authenticate } = require("./auth/authenticate.js");
+const messageRouter = require('./routes/messageRoutes');
 const socketIO = require('socket.io')
 const http = require('http');
+const bodyparser = require('body-parser');
 
 dotenv.config();
 
@@ -52,6 +54,7 @@ app.use("/api/login", loginRouter);
 app.use("/api/usuario", authenticate, usuarioRouter);
 app.use("/api/singout", singoutRouter);
 app.use("/api/foro", foroRouter);
+app.use("/api/message", messageRouter);
 app.use("/api/rToken", rTokenRouter);
 
 app.get("/", (req, res) => {
@@ -59,10 +62,15 @@ app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/cliente/index.html`);
 });
 
-const port = process.env.PORT || 8443;
 
+
+
+
+const port = process.env.PORT || 8443;
 server.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
+
+
 
 
