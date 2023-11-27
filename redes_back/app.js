@@ -9,10 +9,13 @@ const singoutRouter = require("./routes/singout.js");
 const foroRouter = require("./routes/foro.js");
 const rTokenRouter = require("./routes/rToken.js");
 const { authenticate } = require("./auth/authenticate.js");
-const messageRouter = require('./routes/messageRoutes');
+const messageRouter = require('./routes/message.js');
 const socketIO = require('socket.io')
 const http = require('http');
 const bodyparser = require('body-parser');
+const morgan = require('morgan');
+
+
 
 dotenv.config();
 
@@ -23,21 +26,25 @@ const io = socketIO(server, {
 });
  
 io.on('connection', (socket) => {
-  if(connetion){
-    console.log("Un cliente se conectó");
-  }else{
-    console.log("Un cliente se desconectó");
-  }
-      // console.log("te conectaste");
-      Socket.on('chat message',(msg)=>{
-        io.emit('chat message', msg)
-        console.log('Mensaje: ' + msg)
+  console.log(socket.id)
+  console.log("Nuevo cliente conectado") 
+  socket.on('message',(message,nickname)=>{
+    //envio a los clientes 
+    socket.broadcast.emit('message',{
+      body: message,
+      from: nickname
     })
+  })
   
 });
-
+//middlewares
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
+app.use(bodyparser.urlencoded({extended:false}));
+app.use(bodyparser.json());
+
+
 
 async function main(){
   await mongoose.connect(process.env.DB_CONNECTION_STRING);
